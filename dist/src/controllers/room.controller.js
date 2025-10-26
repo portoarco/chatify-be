@@ -21,10 +21,30 @@ const postRoomByCode = async (req, res) => {
             return res.status(500).send("Error data");
         const checkCode = await prisma_1.prisma.rooms.findUnique({ where: { code } });
         const checkEmail = await prisma_1.prisma.users.findUnique({ where: { email } });
+        // find user_id based on email
+        const findUserbyEmail = await prisma_1.prisma.users.findUnique({
+            where: { email: email },
+        });
+        console.log(findUserbyEmail);
+        const user_id = findUserbyEmail?.id;
+        // find room id based on code
+        const findRoomIdbyRoomCode = await prisma_1.prisma.rooms.findUnique({
+            where: { code: code },
+        });
+        const room_id = findRoomIdbyRoomCode?.id;
+        if (!room_id)
+            return res.status(500).send("Find Room id Error");
         if (!checkEmail) {
-            await prisma_1.prisma.users.create({
+            const createNewUser = await prisma_1.prisma.users.create({
                 data: {
                     email: email,
+                },
+            });
+            const new_user_id = createNewUser.id;
+            await prisma_1.prisma.room_Details.create({
+                data: {
+                    user_id: new_user_id,
+                    room_id: room_id,
                 },
             });
         }
