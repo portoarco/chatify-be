@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  // output   = "../src/generated/prisma"
+  output = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+
+
+enum COMMENTS_TYPE {
+  IMAGE
+  VIDEO
+  FILE
+  TEXT
+}
+
+model Users {
+    id String @id @default(uuid())
+    email String @unique
+    created_at DateTime @default(now())
+    room_details Room_Details[]
+    comments Comments[]
+}
+
+model Products {
+  id Int @id @default(autoincrement())
+  name String @unique
+  image_url String
+  created_at DateTime @default(now())
+  Rooms Rooms[]
+}
+
+model Rooms {
+  id String @id @default(uuid())
+  code String? @unique
+  name String
+  image_url String
+  product_id Int
+  created_at DateTime @default(now())
+  product Products @relation(fields: [product_id],references: [id],onDelete: Cascade)
+  Comments Comments[]
+  Room_Details Room_Details[]
+}
+
+model Comments {
+  id Int @id @default(autoincrement())
+  message String
+  user_id String
+  room_id String
+  type COMMENTS_TYPE
+  created_at DateTime @default(now())
+  room Rooms @relation(fields: [room_id],references: [id],onDelete: Cascade)
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
+}
+
+model Room_Details {
+  id String @id @default(uuid())
+  user_id String
+  room_id String
+  created_at DateTime @default(now())
+  room Rooms @relation(fields: [room_id],references: [id], onDelete: Cascade)
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
+}
