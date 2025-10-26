@@ -24,4 +24,5 @@ app.use("/api/message", message_router_1.default);
 app.listen(PORT, () => {
     console.info(`API is running at http://localhost:${PORT}`);
 });
+exports.default = app;
 //# sourceMappingURL=index.js.map

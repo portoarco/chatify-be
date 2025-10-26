@@ -23,3 +23,5 @@ app.use("/api/message", messageRouters);
 app.listen(PORT, () => {
   console.info(`API is running at http://localhost:${PORT}`);
 });
+
+export default app;
