@@ -1,7 +1,6 @@
 .env*
 node_modules
 .qodo
-dist
 
 /src/generated/prisma
 
